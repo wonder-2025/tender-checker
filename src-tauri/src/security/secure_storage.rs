@@ -18,6 +18,7 @@ impl SecureStorage {
     #[cfg(target_os = "windows")]
     pub fn save_encrypted(&self, key: &str, value: &str) -> Result<(), String> {
         use windows::Win32::Security::Cryptography::*;
+        use windows::Win32::System::Memory::LocalFree;
         use windows::core::PCWSTR;
         
         let data = format!("{}={}", key, value);
@@ -64,6 +65,7 @@ impl SecureStorage {
     #[cfg(target_os = "windows")]
     pub fn load_decrypted(&self, key: &str) -> Result<String, String> {
         use windows::Win32::Security::Cryptography::*;
+        use windows::Win32::System::Memory::LocalFree;
         use windows::core::PCWSTR;
         
         if !self.storage_path.exists() {
