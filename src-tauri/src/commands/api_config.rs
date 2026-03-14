@@ -64,7 +64,7 @@ pub fn save_api_config(
         config.secret_key,
         config.model,
         config.base_url,
-    );
+    )?;
     
     // 序列化并保存
     let json = serde_json::to_string(&encrypted)
@@ -96,7 +96,7 @@ pub fn load_api_config(
             let encrypted: EncryptedApiConfig = serde_json::from_str(&json)
                 .map_err(|e| format!("解析失败: {}", e))?;
             
-            let (provider, api_key, secret_key, model, base_url) = encrypted.to_plain();
+            let (provider, api_key, secret_key, model, base_url) = encrypted.to_plain()?;
             
             Ok(Some(LlmConfig {
                 provider,

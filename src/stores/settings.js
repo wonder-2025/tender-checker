@@ -5,7 +5,7 @@ export const useSettingsStore = defineStore('settings', () => {
   // 错误日志上报配置
   const errorReport = ref({
     enabled: true,
-    serverUrl: 'http://106.12.190.227:30051/api/tender-checker/error-log'
+    serverUrl: ''  // 用户需自行配置服务器地址
   })
 
   // 测试服务器连接
