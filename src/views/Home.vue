@@ -92,7 +92,7 @@ import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { Upload, CircleCheckFilled, Document, Lightning, Right, DocumentChecked } from '@element-plus/icons-vue'
-import { open } from '@tauri-apps/api/dialog'
+import { open } from '@tauri-apps/plugin-dialog'
 
 const router = useRouter()
 const appStore = useAppStore()

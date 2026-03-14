@@ -292,7 +292,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { useAppStore } from '@/stores'
 import { useSettingsStore } from '@/stores/settings'
 import { ElMessage } from 'element-plus'
-import { invoke } from '@tauri-apps/api'
+import { invoke } from '@tauri-apps/api/core'
 import { View, Delete, Download } from '@element-plus/icons-vue'
 
 const appStore = useAppStore()

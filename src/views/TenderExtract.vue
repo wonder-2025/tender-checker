@@ -151,7 +151,7 @@ import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { RefreshRight, CircleCheck } from '@element-plus/icons-vue'
-import { invoke } from '@tauri-apps/api'
+import { invoke } from '@tauri-apps/api/core'
 
 const router = useRouter()
 const appStore = useAppStore()

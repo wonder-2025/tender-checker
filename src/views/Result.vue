@@ -227,7 +227,7 @@ async function exportReport() {
   }
   
   try {
-    const { invoke } = await import('@tauri-apps/api')
+    const { invoke } = await import('@tauri-apps/api/core')
     const result = await invoke('export_report', {
       project: appStore.project,
       results: results.value,
