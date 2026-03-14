@@ -234,9 +234,9 @@ pub fn log_format_change(property: &str, old_value: &str, new_value: &str) {
 fn mask_api_key(text: &str) -> String {
     // 匹配常见的API Key模式
     let patterns = [
-        (r#"["']?api[_-]?key["']?\s*[:=]\s*["']([a-zA-Z0-9_-]{20,})["']"#i, "api_key"),
-        (r#"["']?authorization["']?\s*[:=]\s*["']Bearer\s+([a-zA-Z0-9_-]{20,})["']"#i, "bearer"),
-        (r#"["']?access[_-]?token["']?\s*[:=]\s*["']([a-zA-Z0-9_-]{20,})["']"#i, "token"),
+        (r#"(?i)["']?api[_-]?key["']?\s*[:=]\s*["']([a-zA-Z0-9_-]{20,})["']"#, "api_key"),
+        (r#"(?i)["']?authorization["']?\s*[:=]\s*["']Bearer\s+([a-zA-Z0-9_-]{20,})["']"#, "bearer"),
+        (r#"(?i)["']?access[_-]?token["']?\s*[:=]\s*["']([a-zA-Z0-9_-]{20,})["']"#, "token"),
     ];
     
     let mut result = text.to_string();

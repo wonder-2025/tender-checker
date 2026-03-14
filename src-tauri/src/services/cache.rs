@@ -218,16 +218,19 @@ impl CacheManager {
             let current_size: usize = cache.values().map(|e| e.size_bytes).sum();
             if current_size + size_bytes > self.max_memory_size {
                 // 清理最少使用的
-                let mut entries: Vec<_> = cache.iter().collect();
-                entries.sort_by_key(|(_, e)| e.hit_count);
+                let entries: Vec<_> = cache.iter()
+                    .map(|(k, e)| (k.clone(), e.hit_count, e.size_bytes))
+                    .collect();
+                let mut entries = entries;
+                entries.sort_by_key(|(_, hit, _)| *hit);
                 
                 let mut freed = 0;
-                for (k, e) in entries {
+                for (k, _, size) in entries {
                     if current_size - freed + size_bytes <= self.max_memory_size {
                         break;
                     }
-                    freed += e.size_bytes;
-                    cache.remove(k);
+                    freed += size;
+                    cache.remove(&k);
                     self.stats.lock().evictions += 1;
                 }
             }

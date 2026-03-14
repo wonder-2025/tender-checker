@@ -48,17 +48,22 @@ pub fn desensitize(
     // 执行脱敏
     for rule in sorted_rules.iter().filter(|r| r.enabled) {
         if let Ok(re) = Regex::new(&rule.pattern) {
-            let captures: Vec<_> = re.find_iter(&result).collect();
+            // 先收集所有匹配项
+            let matches: Vec<_> = re.find_iter(&result)
+                .map(|m| (m.start(), m.end(), m.as_str().to_string()))
+                .collect();
             
-            for cap in captures {
-                let original = cap.as_str().to_string();
+            // 记录匹配项到 sensitive_map
+            for (_, _, original) in &matches {
                 let id = format!("{}_{}", rule.id, sensitive_map.len());
-                
-                result = re.replace(&result.clone(), &rule.replacement).to_string();
-                sensitive_map.insert(id.clone(), original);
-                
+                sensitive_map.insert(id.clone(), original.clone());
                 *stats.by_rule.entry(rule.name.clone()).or_insert(0) += 1;
                 stats.total_replacements += 1;
+            }
+            
+            // 一次性替换所有匹配项
+            if !matches.is_empty() {
+                result = re.replace_all(&result, &rule.replacement).to_string();
             }
         }
     }

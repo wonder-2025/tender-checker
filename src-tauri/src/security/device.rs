@@ -55,10 +55,43 @@ pub fn get_device_info() -> DeviceInfo {
             .ok()
             .and_then(|h| h.into_string().ok())
             .unwrap_or_default(),
-        cpu_id: get_cpu_id_windows().unwrap_or_default(),
-        disk_id: get_disk_id_windows().unwrap_or_default(),
-        motherboard_id: get_motherboard_id_windows().unwrap_or_default(),
+        cpu_id: get_cpu_id().unwrap_or_default(),
+        disk_id: get_disk_id().unwrap_or_default(),
+        motherboard_id: get_motherboard_id().unwrap_or_default(),
     }
+}
+
+/// 获取CPU ID
+#[cfg(target_os = "windows")]
+fn get_cpu_id() -> Result<String, String> {
+    get_cpu_id_windows()
+}
+
+#[cfg(not(target_os = "windows"))]
+fn get_cpu_id() -> Result<String, String> {
+    Ok(String::new())
+}
+
+/// 获取磁盘序列号
+#[cfg(target_os = "windows")]
+fn get_disk_id() -> Result<String, String> {
+    get_disk_id_windows()
+}
+
+#[cfg(not(target_os = "windows"))]
+fn get_disk_id() -> Result<String, String> {
+    Ok(String::new())
+}
+
+/// 获取主板序列号
+#[cfg(target_os = "windows")]
+fn get_motherboard_id() -> Result<String, String> {
+    get_motherboard_id_windows()
+}
+
+#[cfg(not(target_os = "windows"))]
+fn get_motherboard_id() -> Result<String, String> {
+    Ok(String::new())
 }
 
 /// Windows平台获取CPU ID

@@ -131,7 +131,9 @@ impl RateLimiter {
             
             // 只保留最近1000条
             if records.len() > 1000 {
-                *records = records.split_off(records.len() - 1000);
+                let start = records.len() - 1000;
+                let new_records: Vec<_> = records.drain(start..).collect();
+                *records = new_records;
             }
         }
     }

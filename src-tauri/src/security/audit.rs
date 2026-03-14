@@ -139,7 +139,8 @@ impl AuditLogger {
         
         if let Ok(file) = File::open(&self.log_path) {
             let reader = BufReader::new(file);
-            for line in reader.lines().rev().take(limit).flatten() {
+            let lines: Vec<_> = reader.lines().filter_map(|l| l.ok()).collect();
+            for line in lines.into_iter().rev().take(limit) {
                 if let Ok(log) = serde_json::from_str::<AuditLog>(&line) {
                     logs.push(log);
                 }

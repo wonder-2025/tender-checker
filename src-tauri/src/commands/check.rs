@@ -129,6 +129,7 @@ async fn execute_single_check(
             status: "success".to_string(),
             result: Some(response),
             error: None,
+            suggestion: None,
         },
         Err(e) => CheckResult {
             id: rule.id.clone(),
@@ -138,6 +139,7 @@ async fn execute_single_check(
             status: "error".to_string(),
             result: None,
             error: Some(e),
+            suggestion: None,
         },
     }
 }
@@ -191,6 +193,7 @@ async fn execute_project_checks(
                 status: "success".to_string(),
                 result: Some(response),
                 error: None,
+                suggestion: None,
             }),
             Err(e) => results.push(CheckResult {
                 id: id.to_string(),
@@ -200,6 +203,7 @@ async fn execute_project_checks(
                 status: "error".to_string(),
                 result: None,
                 error: Some(e),
+                suggestion: None,
             }),
         }
     }
@@ -217,6 +221,7 @@ pub fn get_default_check_rules() -> Vec<CheckRule> {
             category: "通用检查".to_string(),
             prompt_template: "请检查以下标书中所有出现的项目名称和项目编号，检查是否完全一致。列出所有出现位置，标注不一致之处。".to_string(),
             severity: "error".to_string(),
+            enabled: true,
         },
         CheckRule {
             id: "competitor".to_string(),
@@ -224,6 +229,7 @@ pub fn get_default_check_rules() -> Vec<CheckRule> {
             category: "通用检查".to_string(),
             prompt_template: "请检查以下标书是否出现以下友商关键词：华为、新华三、深信服、奇安信、天融信、启明星辰、绿盟、山石网科、亚信安全、迪普科技、安恒信息。列出所有发现的位置和上下文。".to_string(),
             severity: "error".to_string(),
+            enabled: true,
         },
         CheckRule {
             id: "amount".to_string(),
@@ -231,6 +237,7 @@ pub fn get_default_check_rules() -> Vec<CheckRule> {
             category: "通用检查".to_string(),
             prompt_template: "请提取以下标书中所有金额信息，包括数字和中文大写。检查：1. 大小写是否对应；2. 总价是否等于分项之和；3. 前后文金额是否一致。列出所有金额及位置。".to_string(),
             severity: "error".to_string(),
+            enabled: true,
         },
         CheckRule {
             id: "typo".to_string(),
@@ -238,6 +245,7 @@ pub fn get_default_check_rules() -> Vec<CheckRule> {
             category: "通用检查".to_string(),
             prompt_template: "请检查以下标书中的错别字，包括：1. 常见错别字；2. 专业术语错误；3. 表达不通顺之处。列出所有发现的问题及修改建议。".to_string(),
             severity: "warning".to_string(),
+            enabled: true,
         },
         CheckRule {
             id: "date".to_string(),
@@ -245,6 +253,7 @@ pub fn get_default_check_rules() -> Vec<CheckRule> {
             category: "通用检查".to_string(),
             prompt_template: "请检查以下标书中所有日期信息，检查：1. 日期格式是否统一；2. 是否有过期日期；3. 投标有效期是否符合常规要求（通常90-180天）。".to_string(),
             severity: "info".to_string(),
+            enabled: true,
         },
     ]
 }

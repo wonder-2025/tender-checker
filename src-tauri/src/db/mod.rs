@@ -1,5 +1,5 @@
 use rusqlite::Connection;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 /// 初始化数据库
 pub fn init_database(_app: &AppHandle) -> Result<(), String> {

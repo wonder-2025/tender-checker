@@ -268,7 +268,9 @@ async fn parse_pdf(file_path: &str) -> Result<ParseResult, String> {
 
 /// 解析Excel文档
 async fn parse_excel(file_path: &str) -> Result<ParseResult, String> {
-    let mut workbook = calamine::open_workbook_auto::<calamine::Xlsx<_>, _>(file_path)
+    use calamine::Reader;
+    
+    let mut workbook = calamine::open_workbook_auto(file_path)
         .map_err(|e| format!("Excel解析失败: {}", e))?;
     
     let mut content = String::new();
@@ -276,7 +278,8 @@ async fn parse_excel(file_path: &str) -> Result<ParseResult, String> {
     for sheet_name in workbook.sheet_names() {
         content.push_str(&format!("【{}】\n", sheet_name));
         
-        if let Some(range) = workbook.worksheet_range(&sheet_name).map_err(|e| e.to_string())? {
+        if let Some(range) = workbook.worksheet_range(&sheet_name) {
+            let range = range.map_err(|e| e.to_string())?;
             for row in range.rows() {
                 for cell in row {
                     content.push_str(&format!("{} ", cell));

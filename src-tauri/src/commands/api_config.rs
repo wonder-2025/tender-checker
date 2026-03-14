@@ -3,15 +3,8 @@ use tauri::State;
 use crate::AppState;
 use crate::security::secure_storage::SecureStorage;
 
-/// LLM配置
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LlmConfig {
-    pub provider: String,
-    pub api_key: String,
-    pub secret_key: Option<String>,
-    pub model: String,
-    pub base_url: Option<String>,
-}
+// 重新导出 LlmConfig，避免重复定义
+pub use crate::services::llm_client::LlmConfig;
 
 /// API测试结果
 #[derive(Debug, Serialize)]
