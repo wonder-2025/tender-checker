@@ -1,0 +1,35 @@
+{
+  "name": "tender-checker",
+  "version": "1.0.0",
+  "description": "Windows标书智能检查工具 - Tauri版",
+  "author": "JARVIS AI Assistant",
+  "contributors": [
+    "小王 (产品需求与指导)"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-repo/tender-checker"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.5",
+    "pinia": "^2.1.7",
+    "element-plus": "^2.5.0",
+    "@element-plus/icons-vue": "^2.3.1",
+    "@tauri-apps/api": "^2.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0",
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
