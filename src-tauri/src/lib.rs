@@ -1,10 +1,8 @@
-// Prevents additional console window on Windows in release
-#![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
-)]
+// 标书智能检查工具
+// 库入口文件
+//
+// 设计者: wonder-宏 (产品设计) | JARVIS AI Assistant (架构设计 & 开发实现)
 
-#[macro_use]
 mod commands;
 mod services;
 mod models;
@@ -23,7 +21,8 @@ pub struct AppState {
     pub audit_logger: Arc<Mutex<AuditLogger>>,
 }
 
-fn main() {
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
     // 初始化日志系统
     env_logger::Builder::from_default_env()
         .filter_level(log::LevelFilter::Info)
