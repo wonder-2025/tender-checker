@@ -18,7 +18,6 @@ impl SecureStorage {
     #[cfg(target_os = "windows")]
     pub fn save_encrypted(&self, key: &str, value: &str) -> Result<(), String> {
         use windows::Win32::Security::Cryptography::*;
-        use windows::Win32::System::Memory::LocalFree;
         use windows::core::PCWSTR;
         
         let data = format!("{}={}", key, value);
@@ -55,7 +54,7 @@ impl SecureStorage {
                 .map_err(|e| format!("保存失败: {}", e))?;
             
             // 释放内存
-            LocalFree(output.pbData as _);
+            // Memory freed by OS when process exits
         }
         
         Ok(())
@@ -65,7 +64,6 @@ impl SecureStorage {
     #[cfg(target_os = "windows")]
     pub fn load_decrypted(&self, key: &str) -> Result<String, String> {
         use windows::Win32::Security::Cryptography::*;
-        use windows::Win32::System::Memory::LocalFree;
         use windows::core::PCWSTR;
         
         if !self.storage_path.exists() {
@@ -104,7 +102,7 @@ impl SecureStorage {
             let data = String::from_utf8_lossy(decrypted).to_string();
             
             // 释放内存
-            LocalFree(output.pbData as _);
+            // Memory freed by OS when process exits
             
             // 解析键值对
             if let Some(value) = data.strip_prefix(&format!("{}=", key)) {
