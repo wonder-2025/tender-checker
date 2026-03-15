@@ -210,7 +210,11 @@ pub fn generate_license(
     let license = License {
         license_id: format!("TC-{}-{}", 
             now.format("%Y"),
-            Uuid::new_v4().to_string().split('-').next().unwrap()
+            Uuid::new_v4()
+                .to_string()
+                .split('-')
+                .next()
+                .unwrap_or("unknown")
         ),
         license_key: String::new(),
         device_fingerprint,

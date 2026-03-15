@@ -74,12 +74,12 @@ pub fn init_logger(data_dir: &str, enabled: bool, level: &str, log_items: &[Stri
         let _ = fs::create_dir_all(&config.log_dir);
     }
     
-    *LOGGER_CONFIG.lock().unwrap() = Some(config);
+    *LOGGER_CONFIG.lock().expect("获取锁失败: LOGGER_CONFIG") = Some(config);
 }
 
 /// 检查是否应该记录该类型的日志
 fn should_log(category: &LogCategory) -> bool {
-    let config = LOGGER_CONFIG.lock().unwrap();
+    let config = LOGGER_CONFIG.lock().expect("获取锁失败: LOGGER_CONFIG");
     
     if let Some(ref cfg) = *config {
         if !cfg.enabled {
@@ -103,7 +103,7 @@ fn should_log(category: &LogCategory) -> bool {
 
 /// 获取日志文件路径
 fn get_log_file_path() -> Option<PathBuf> {
-    let config = LOGGER_CONFIG.lock().unwrap();
+    let config = LOGGER_CONFIG.lock().expect("获取锁失败: LOGGER_CONFIG");
     
     if let Some(ref cfg) = *config {
         let today = Local::now().format("%Y-%m-%d").to_string();

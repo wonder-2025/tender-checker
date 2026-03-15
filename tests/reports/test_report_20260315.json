@@ -1,0 +1,303 @@
+{
+  "test_report": {
+    "project": "tender-checker",
+    "project_type": "Tauri v2 + Vue3 + Rust",
+    "scan_time": "2026-03-15T22:57:00+08:00",
+    "environment": "Linux 服务器（无 GUI）"
+  },
+  "summary": {
+    "unit_tests": {
+      "frontend": {
+        "status": "skipped",
+        "reason": "未配置单元测试脚本 (npm run test:unit)"
+      },
+      "rust": {
+        "status": "skipped",
+        "reason": "Rust 环境未安装 (cargo not found)"
+      }
+    },
+    "integration_tests": {
+      "status": "skipped",
+      "reason": "无专用集成测试文件"
+    },
+    "e2e_tests": {
+      "status": "skipped",
+      "reason": "无 GUI 环境，无法启动浏览器"
+    },
+    "bug_hunter": {
+      "status": "completed",
+      "total_issues": 28,
+      "high": 0,
+      "medium": 18,
+      "low": 10
+    }
+  },
+  "bugs": [
+    {
+      "id": "BUG-001",
+      "file": "src-tauri/src/security/rate_limiter.rs",
+      "lines": "60, 74, 80, 91, 112, 118, 124, 143, 163, 169, 172",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "Mutex unwrap() 滥用",
+      "description": "多处使用 .lock().unwrap() 可能导致 panic",
+      "fix_suggestion": "使用 expect() 提供有意义的错误信息，或使用 match 处理锁获取失败的情况"
+    },
+    {
+      "id": "BUG-002",
+      "file": "src-tauri/src/security/license.rs",
+      "line": 190,
+      "severity": "medium",
+      "category": "security",
+      "title": "许可证签名验证未实现",
+      "description": "RSA 签名验证标记为 TODO，许可证可被伪造",
+      "fix_suggestion": "实现完整的 RSA 签名验证逻辑"
+    },
+    {
+      "id": "BUG-003",
+      "file": "src-tauri/src/security/license.rs",
+      "line": 213,
+      "severity": "medium",
+      "category": "correctness",
+      "title": "UUID 生成后 unwrap() 使用",
+      "description": "split('-').next().unwrap() 可能导致 panic",
+      "fix_suggestion": "使用 unwrap_or_default() 或提供默认值"
+    },
+    {
+      "id": "BUG-004",
+      "file": "src-tauri/src/services/logger.rs",
+      "lines": "77, 82, 106",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "Logger Mutex unwrap() 使用",
+      "description": "全局日志配置的 Mutex 操作使用了 unwrap()",
+      "fix_suggestion": "使用 expect() 或更安全的锁处理方式"
+    },
+    {
+      "id": "BUG-005",
+      "file": "src-tauri/src/security/log_sanitizer.rs",
+      "lines": "8, 11, 14, 17, 20, 23, 26, 29",
+      "severity": "low",
+      "category": "correctness",
+      "title": "Regex::new().unwrap() 静态调用",
+      "description": "正则表达式编译失败会导致程序崩溃，但因为是静态字符串风险较低",
+      "fix_suggestion": "考虑使用 lazy_static! 或 once_cell::sync::Lazy 缓存编译结果"
+    },
+    {
+      "id": "BUG-006",
+      "file": "src/stores/index.js",
+      "line": 55,
+      "severity": "medium",
+      "category": "correctness",
+      "title": "await 无 try-catch 包装",
+      "description": "invoke('parse_tender_document') 的 await 没有错误处理",
+      "fix_suggestion": "添加 try-catch 并处理错误情况"
+    },
+    {
+      "id": "BUG-007",
+      "file": "src/stores/index.js",
+      "lines": "81, 91, 106",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "多个 invoke 调用缺少完整错误处理",
+      "description": "loadDefaultDesensitizeRules, loadCustomRules 等方法中的 invoke 调用",
+      "fix_suggestion": "确保所有异步操作都有适当的错误处理"
+    },
+    {
+      "id": "BUG-008",
+      "file": "src/components/LicenseManager.vue",
+      "lines": "173, 185, 194, 203",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "Vue 组件中的 await 缺少外层 try-catch",
+      "description": "多个 invoke 调用在 async 函数中但错误处理不完整",
+      "fix_suggestion": "添加全局错误处理或使用 ElMessage 显示错误"
+    },
+    {
+      "id": "BUG-009",
+      "file": "src-tauri/src/commands/file.rs",
+      "line": 224,
+      "severity": "low",
+      "category": "correctness",
+      "title": "docx 解析器未实现",
+      "description": "parse_docx 函数标记为 TODO，实际未正确解析 docx 格式",
+      "fix_suggestion": "使用 zip 库解压并解析 document.xml"
+    },
+    {
+      "id": "BUG-010",
+      "file": "src-tauri/src/commands/file.rs",
+      "line": 230,
+      "severity": "low",
+      "category": "compatibility",
+      "title": "不支持 .doc 格式",
+      "description": "旧版 Word 文档格式不支持",
+      "fix_suggestion": "建议用户转换格式或添加第三方库支持"
+    },
+    {
+      "id": "BUG-011",
+      "file": "src-tauri/src/commands/history.rs",
+      "lines": "17, 24, 31",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "历史记录功能未实现",
+      "description": "get_history, delete_history, clear_history 标记为 TODO",
+      "fix_suggestion": "实现数据库操作完成历史记录功能"
+    },
+    {
+      "id": "BUG-012",
+      "file": "src-tauri/src/commands/custom_rules.rs",
+      "lines": "39, 66, 73, 80, 98",
+      "severity": "medium",
+      "category": "correctness",
+      "title": "自定义规则数据库操作未实现",
+      "description": "多个函数标记为 TODO，未与数据库集成",
+      "fix_suggestion": "完成数据库 CRUD 操作"
+    },
+    {
+      "id": "BUG-013",
+      "file": "src/views/TenderExtract.vue",
+      "lines": "174, 214",
+      "severity": "low",
+      "category": "code_quality",
+      "title": "前端功能未完成",
+      "description": "重新提取、保存编辑等功能标记为 TODO",
+      "fix_suggestion": "完成前端交互逻辑"
+    },
+    {
+      "id": "BUG-014",
+      "file": "src/views/Result.vue",
+      "line": 206,
+      "severity": "low",
+      "category": "code_quality",
+      "title": "文档定位功能未实现",
+      "description": "点击结果项定位到文档位置的功能标记为 TODO",
+      "fix_suggestion": "实现文档位置跳转功能"
+    },
+    {
+      "id": "BUG-015",
+      "file": "src/views/History.vue",
+      "line": 282,
+      "severity": "low",
+      "category": "code_quality",
+      "title": "历史记录加载未实现",
+      "description": "加载历史结果并跳转的功能标记为 TODO",
+      "fix_suggestion": "完成历史记录加载逻辑"
+    },
+    {
+      "id": "BUG-016",
+      "file": "src/views/Settings.vue",
+      "lines": "478, 486, 540",
+      "severity": "low",
+      "category": "code_quality",
+      "title": "设置导出/导入/日志查看未实现",
+      "description": "多个设置相关功能标记为 TODO",
+      "fix_suggestion": "完成设置功能的导入导出"
+    },
+    {
+      "id": "BUG-017",
+      "file": "project",
+      "line": 0,
+      "severity": "low",
+      "category": "code_quality",
+      "title": "console.log 残留",
+      "description": "发现 11 处 console.log/error/warn 调用未清理",
+      "fix_suggestion": "生产环境中移除或使用条件编译"
+    },
+    {
+      "id": "BUG-018",
+      "file": "src-tauri/src/security/audit.rs",
+      "line": 234,
+      "severity": "low",
+      "category": "correctness",
+      "title": "测试代码中使用 tempdir().unwrap()",
+      "description": "测试代码中的 unwrap 可以接受，但建议使用更明确的断言",
+      "fix_suggestion": "保持现状或在测试中使用 assert!"
+    }
+  ],
+  "security_analysis": {
+    "hardcoded_secrets": {
+      "status": "pass",
+      "details": "未发现硬编码的密钥或密码"
+    },
+    "sql_injection": {
+      "status": "pass",
+      "details": "SQL 语句使用静态字符串，无用户输入拼接"
+    },
+    "command_injection": {
+      "status": "pass",
+      "details": "wmic 命令参数硬编码，无用户输入"
+    },
+    "path_traversal": {
+      "status": "pass",
+      "details": "文件路径通过 Tauri 文件对话框获取，有扩展名和大小验证"
+    },
+    "file_validation": {
+      "status": "pass",
+      "details": "实现了文件大小限制(50MB)、扩展名白名单、魔数验证"
+    },
+    "data_sanitization": {
+      "status": "pass",
+      "details": "实现了日志脱敏功能(手机号、身份证、银行卡等)"
+    },
+    "license_validation": {
+      "status": "warning",
+      "details": "许可证签名验证未实现，存在伪造风险"
+    }
+  },
+  "code_statistics": {
+    "frontend": {
+      "total_lines": 3639,
+      "files": 12,
+      "languages": ["Vue", "JavaScript"]
+    },
+    "backend": {
+      "total_lines": 4579,
+      "files": 20,
+      "language": "Rust"
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "security",
+      "title": "实现许可证签名验证",
+      "description": "完成 RSA 签名验证逻辑，防止许可证被伪造"
+    },
+    {
+      "priority": "high",
+      "category": "correctness",
+      "title": "完成数据库集成",
+      "description": "历史记录、自定义规则等功能需要完成数据库操作"
+    },
+    {
+      "priority": "medium",
+      "category": "correctness",
+      "title": "改进 Rust 错误处理",
+      "description": "使用 expect() 替代 unwrap()，或使用 ? 操作符传播错误"
+    },
+    {
+      "priority": "medium",
+      "category": "correctness",
+      "title": "添加前端单元测试",
+      "description": "配置 Vitest 并为关键组件添加测试"
+    },
+    {
+      "priority": "medium",
+      "category": "correctness",
+      "title": "实现 docx 解析器",
+      "description": "使用 zip + quick-xml 正确解析 docx 文件结构"
+    },
+    {
+      "priority": "low",
+      "category": "code_quality",
+      "title": "清理 console.log",
+      "description": "移除或使用环境变量控制调试输出"
+    },
+    {
+      "priority": "low",
+      "category": "code_quality",
+      "title": "完成前端 TODO 功能",
+      "description": "完成标记为 TODO 的前端交互功能"
+    }
+  ]
+}

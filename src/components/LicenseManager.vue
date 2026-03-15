@@ -177,6 +177,7 @@ async function loadDeviceFingerprint() {
     })
   } catch (error) {
     console.error('获取设备信息失败:', error)
+    ElMessage.error(`获取设备信息失败: ${error.message || error}`)
   }
 }
 
@@ -186,6 +187,7 @@ async function loadLicenseStatus() {
     licenseStatus.value = status
   } catch (error) {
     console.error('获取许可证状态失败:', error)
+    ElMessage.error(`获取许可证状态失败: ${error.message || error}`)
   }
 }
 
@@ -195,6 +197,7 @@ async function loadUsageStats() {
     usageStats.value = stats
   } catch (error) {
     console.error('获取使用统计失败:', error)
+    ElMessage.error(`获取使用统计失败: ${error.message || error}`)
   }
 }
 
@@ -204,6 +207,7 @@ async function loadAuditLogs() {
     auditLogs.value = logs
   } catch (error) {
     console.error('获取审计日志失败:', error)
+    ElMessage.error(`获取审计日志失败: ${error.message || error}`)
   }
 }
 

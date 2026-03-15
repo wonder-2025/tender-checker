@@ -392,6 +392,7 @@ async function loadDefaultRules() {
     enabledRules.value = rules.filter(r => r.enabled).map(r => r.id)
   } catch (error) {
     console.error('加载默认规则失败:', error)
+    ElMessage.error(`加载默认规则失败: ${error.message || error}`)
   }
 }
 
@@ -430,6 +431,7 @@ async function loadCustomRules() {
     customCheckRules.value = rules
   } catch (error) {
     console.error('加载自定义规则失败:', error)
+    ElMessage.error(`加载自定义规则失败: ${error.message || error}`)
   }
 }
 
@@ -538,7 +540,9 @@ async function viewLogFile() {
   try {
     const content = await invoke('read_log_file', { lines: 100 })
     // TODO: 显示日志查看对话框
-    console.log('Log content:', content)
+    if (import.meta.env.DEV) {
+      console.log('Log content:', content)
+    }
   } catch (error) {
     ElMessage.error('读取日志失败: ' + error.message)
   }

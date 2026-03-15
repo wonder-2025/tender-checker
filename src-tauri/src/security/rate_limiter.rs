@@ -57,7 +57,7 @@ impl RateLimiter {
         
         // 检查最小间隔
         {
-            let last = self.last_check.lock().unwrap();
+            let last = self.last_check.lock().expect("获取锁失败: last_check");
             if let Some(last_time) = *last {
                 let elapsed = now.duration_since(last_time).as_secs();
                 if elapsed < self.config.min_interval_secs as u64 {
@@ -71,13 +71,13 @@ impl RateLimiter {
         
         // 清理过期记录
         {
-            let mut times = self.check_times.lock().unwrap();
+            let mut times = self.check_times.lock().expect("获取锁失败: check_times");
             times.retain(|&t| now.duration_since(t).as_secs() < 86400);
         }
         
         // 检查日限制
         {
-            let times = self.check_times.lock().unwrap();
+            let times = self.check_times.lock().expect("获取锁失败: check_times");
             if times.len() >= self.config.max_per_day as usize {
                 return Err(format!(
                     "已达到每日操作上限（{}次），请明天再试",
@@ -88,7 +88,7 @@ impl RateLimiter {
         
         // 检查小时限制
         {
-            let times = self.check_times.lock().unwrap();
+            let times = self.check_times.lock().expect("获取锁失败: check_times");
             let hour_ago = now - std::time::Duration::from_secs(3600);
             let hour_count = times.iter().filter(|&&t| t > hour_ago).count();
             
@@ -109,19 +109,19 @@ impl RateLimiter {
         
         // 记录时间
         {
-            let mut times = self.check_times.lock().unwrap();
+            let mut times = self.check_times.lock().expect("获取锁失败: check_times");
             times.push(now);
         }
         
         // 更新最后操作时间
         {
-            let mut last = self.last_check.lock().unwrap();
+            let mut last = self.last_check.lock().expect("获取锁失败: last_check");
             *last = Some(now);
         }
         
         // 记录详细日志
         {
-            let mut records = self.usage_records.lock().unwrap();
+            let mut records = self.usage_records.lock().expect("获取锁失败: usage_records");
             records.push(UsageRecord {
                 timestamp: chrono::Utc::now().timestamp(),
                 action: action.to_string(),
@@ -140,7 +140,7 @@ impl RateLimiter {
     
     /// 获取今日使用统计
     pub fn get_today_stats(&self) -> UsageStats {
-        let times = self.check_times.lock().unwrap();
+        let times = self.check_times.lock().expect("获取锁失败: check_times");
         let now = Instant::now();
         let day_ago = now - std::time::Duration::from_secs(86400);
         let hour_ago = now - std::time::Duration::from_secs(3600);
@@ -160,16 +160,16 @@ impl RateLimiter {
     
     /// 获取使用历史
     pub fn get_usage_history(&self, limit: usize) -> Vec<UsageRecord> {
-        let records = self.usage_records.lock().unwrap();
+        let records = self.usage_records.lock().expect("获取锁失败: usage_records");
         records.iter().rev().take(limit).cloned().collect()
     }
     
     /// 重置计数（用于测试或管理员操作）
     pub fn reset(&self) {
-        let mut times = self.check_times.lock().unwrap();
+        let mut times = self.check_times.lock().expect("获取锁失败: check_times");
         times.clear();
         
-        let mut last = self.last_check.lock().unwrap();
+        let mut last = self.last_check.lock().expect("获取锁失败: last_check");
         *last = None;
     }
 }

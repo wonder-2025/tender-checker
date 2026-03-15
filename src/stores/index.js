@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { invoke } from '@tauri-apps/api/core'
+import { ElMessage } from 'element-plus'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -60,6 +61,7 @@ export const useAppStore = defineStore('app', {
           return result
         } catch (error) {
           console.error('招标文件解析失败:', error)
+          ElMessage.error(`招标文件解析失败: ${error.message || error}`)
           throw error
         }
       }
@@ -82,6 +84,7 @@ export const useAppStore = defineStore('app', {
         this.desensitizeRules = rules
       } catch (error) {
         console.error('加载脱敏规则失败:', error)
+        ElMessage.error(`加载脱敏规则失败: ${error.message || error}`)
       }
     },
     
@@ -92,6 +95,7 @@ export const useAppStore = defineStore('app', {
         this.checkConfig.customRules = rules
       } catch (error) {
         console.error('加载自定义规则失败:', error)
+        ElMessage.error(`加载自定义规则失败: ${error.message || error}`)
       }
     },
     
@@ -118,6 +122,8 @@ export const useAppStore = defineStore('app', {
         return result
       } catch (error) {
         this.checkProgress.status = 'error'
+        console.error('检查执行失败:', error)
+        ElMessage.error(`检查执行失败: ${error.message || error}`)
         throw error
       }
     },
